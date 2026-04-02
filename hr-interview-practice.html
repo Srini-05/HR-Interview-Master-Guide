@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HR Interview Prep — Dev Edition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0d12;
+    --surface: #13161e;
+    --surface2: #1a1e29;
+    --border: #252a38;
+    --border-glow: #f59e0b40;
+    --accent: #f59e0b;
+    --accent2: #fb923c;
+    --accent-dim: #f59e0b22;
+    --text: #e8e6df;
+    --text-muted: #8b8fa8;
+    --text-dim: #535771;
+    --green: #34d399;
+    --blue: #60a5fa;
+    --pink: #f472b6;
+    --purple: #a78bfa;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 48px 48px;
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, #f59e0b18 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  /* ── Header ── */
+  header {
+    padding: 60px 0 48px;
+    text-align: center;
+    animation: fadeDown 0.7s ease both;
+  }
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--accent-dim);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+  }
+  .header-badge::before { content: '●'; font-size: 8px; animation: pulse 2s infinite; }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 6vw, 3.6rem);
+    font-weight: 900;
+    line-height: 1.1;
+    background: linear-gradient(135deg, #f8f4ec 30%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 14px;
+  }
+  header p {
+    color: var(--text-muted);
+    font-size: 1rem;
+    font-weight: 300;
+    max-width: 520px;
+    margin: 0 auto 30px;
+    line-height: 1.7;
+  }
+
+  /* ── Stats bar ── */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    flex-wrap: wrap;
+    margin-bottom: 36px;
+    animation: fadeDown 0.7s 0.15s ease both;
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--accent);
+  }
+  .stat-label {
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ── Controls ── */
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 44px;
+    animation: fadeDown 0.7s 0.25s ease both;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 10px 22px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+  }
+  .btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-dim);
+    transform: translateY(-1px);
+  }
+  .btn.primary {
+    background: var(--accent);
+    color: #0b0d12;
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+  .btn.primary:hover {
+    background: var(--accent2);
+    border-color: var(--accent2);
+    color: #0b0d12;
+    box-shadow: 0 6px 24px #f59e0b44;
+  }
+  .btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+  /* Search */
+  .search-wrap {
+    position: relative;
+    width: 240px;
+  }
+  .search-wrap svg {
+    position: absolute;
+    left: 12px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-dim);
+    width: 15px; height: 15px;
+    pointer-events: none;
+  }
+  #searchInput {
+    width: 100%;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    padding: 10px 14px 10px 36px;
+    border-radius: var(--radius-sm);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  #searchInput:focus { border-color: var(--accent); }
+  #searchInput::placeholder { color: var(--text-dim); }
+
+  /* Progress */
+  .progress-bar-wrap {
+    margin-bottom: 40px;
+    animation: fadeDown 0.7s 0.3s ease both;
+  }
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 8px;
+  }
+  .progress-meta span:last-child { color: var(--accent); }
+  .progress-track {
+    height: 4px;
+    background: var(--surface2);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 99px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 0%;
+  }
+
+  /* ── Category section ── */
+  .category {
+    margin-bottom: 48px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .cat-icon {
+    width: 36px; height: 36px;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+  .category-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text);
+    flex: 1;
+  }
+  .cat-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    background: var(--surface2);
+    padding: 3px 9px;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+  }
+
+  /* ── Question card ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color 0.25s, box-shadow 0.25s;
+  }
+  .card:hover {
+    border-color: #2e3346;
+    box-shadow: 0 4px 32px #00000040;
+  }
+  .card.revealed {
+    border-color: var(--border-glow);
+    box-shadow: 0 0 0 1px var(--border-glow), 0 8px 40px #f59e0b0d;
+  }
+  .card.hidden-by-search {
+    display: none;
+  }
+
+  .card-question {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 20px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+  }
+  .card-question:hover { background: var(--surface2); }
+
+  .q-number {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    min-width: 28px;
+    flex-shrink: 0;
+  }
+  .q-text {
+    flex: 1;
+    font-size: 0.93rem;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--text);
+  }
+  .q-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .tag {
+    font-size: 0.65rem;
+    padding: 2px 8px;
+    border-radius: 99px;
+    border: 1px solid;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+
+  .reveal-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .reveal-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-dim);
+  }
+  .reveal-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-dim);
+  }
+  .reveal-btn svg { width: 13px; height: 13px; transition: transform 0.3s; }
+  .reveal-btn.active svg { transform: rotate(180deg); }
+
+  /* Answer panel */
+  .answer-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.3s ease;
+    opacity: 0;
+  }
+  .answer-panel.open {
+    max-height: 800px;
+    opacity: 1;
+  }
+  .answer-inner {
+    padding: 0 20px 20px 62px;
+    border-top: 1px solid var(--border);
+    padding-top: 18px;
+  }
+  .answer-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .answer-label::before {
+    content: '';
+    display: block;
+    width: 18px; height: 1px;
+    background: var(--accent);
+  }
+  .answer-body {
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: var(--text-muted);
+  }
+  .answer-body p { margin-bottom: 10px; }
+  .answer-body p:last-child { margin-bottom: 0; }
+  .answer-body strong { color: var(--text); font-weight: 600; }
+  .answer-body .highlight {
+    background: var(--accent-dim);
+    border-left: 2px solid var(--accent);
+    padding: 10px 14px;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin: 12px 0;
+    font-size: 0.87rem;
+    color: var(--text);
+  }
+  .answer-body ul {
+    padding-left: 18px;
+    margin: 8px 0;
+  }
+  .answer-body li { margin-bottom: 5px; }
+
+  /* Tip pill */
+  .tip-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-family: 'DM Mono', monospace;
+    color: var(--green);
+    background: #34d39914;
+    border: 1px solid #34d39930;
+    padding: 4px 10px;
+    border-radius: 99px;
+    margin-top: 10px;
+  }
+
+  /* Category color themes */
+  .cat-intro .cat-icon { background: #60a5fa18; }
+  .cat-career .cat-icon { background: #f472b618; }
+  .cat-experience .cat-icon { background: #34d39918; }
+  .cat-skills .cat-icon { background: #a78bfa18; }
+  .cat-team .cat-icon { background: #fb923c18; }
+  .cat-growth .cat-icon { background: #60a5fa18; }
+  .cat-salary .cat-icon { background: #f59e0b18; }
+  .cat-company .cat-icon { background: #f472b618; }
+  .cat-situational .cat-icon { background: #34d39918; }
+  .cat-reverse .cat-icon { background: #a78bfa18; }
+
+  .tag.blue { color: var(--blue); border-color: #60a5fa40; background: #60a5fa0d; }
+  .tag.pink { color: var(--pink); border-color: #f472b640; background: #f472b60d; }
+  .tag.green { color: var(--green); border-color: #34d39940; background: #34d3990d; }
+  .tag.purple { color: var(--purple); border-color: #a78bfa40; background: #a78bfa0d; }
+  .tag.orange { color: var(--accent2); border-color: #fb923c40; background: #fb923c0d; }
+  .tag.gold { color: var(--accent); border-color: #f59e0b40; background: #f59e0b0d; }
+
+  /* ── No results ── */
+  #noResults {
+    text-align: center;
+    padding: 60px 20px;
+    display: none;
+  }
+  #noResults .nr-icon { font-size: 2.5rem; margin-bottom: 12px; }
+  #noResults p { color: var(--text-muted); font-size: 0.9rem; }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 30px 0;
+    color: var(--text-dim);
+    font-size: 0.78rem;
+    font-family: 'DM Mono', monospace;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .category:nth-child(1) { animation-delay: 0.05s; }
+  .category:nth-child(2) { animation-delay: 0.1s; }
+  .category:nth-child(3) { animation-delay: 0.15s; }
+  .category:nth-child(4) { animation-delay: 0.2s; }
+  .category:nth-child(5) { animation-delay: 0.25s; }
+  .category:nth-child(6) { animation-delay: 0.3s; }
+  .category:nth-child(7) { animation-delay: 0.35s; }
+  .category:nth-child(8) { animation-delay: 0.4s; }
+  .category:nth-child(9) { animation-delay: 0.45s; }
+  .category:nth-child(10) { animation-delay: 0.5s; }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .answer-inner { padding-left: 20px; }
+    .q-tags { display: none; }
+    .stats-bar { gap: 20px; }
+    header { padding: 40px 0 32px; }
+    .search-wrap { width: 100%; }
+    .controls { flex-direction: column; align-items: stretch; }
+    .controls .btn, .controls .search-wrap { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <header>
+    <div class="header-badge">Developer Edition · 2–3 Years Exp</div>
+    <h1>HR Interview<br>Master Guide</h1>
+    <p>Practice 30+ curated HR questions with structured sample answers tailored for software developers.</p>
+  </header>
+
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-num">30+</div><div class="stat-label">Questions</div></div>
+    <div class="stat"><div class="stat-num">10</div><div class="stat-label">Categories</div></div>
+    <div class="stat"><div class="stat-num" id="revealedCount">0</div><div class="stat-label">Reviewed</div></div>
+  </div>
+
+  <div class="controls">
+    <div class="search-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="Search questions…" oninput="handleSearch()">
+    </div>
+    <button class="btn primary" onclick="toggleAll(true)">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      Show All Answers
+    </button>
+    <button class="btn" onclick="toggleAll(false)">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+      Hide All
+    </button>
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-meta">
+      <span>PROGRESS</span>
+      <span id="progressText">0 / 30 reviewed</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+  <div id="questionsContainer">
+
+    <!-- 1. INTRO -->
+    <div class="category cat-intro" data-category="intro">
+      <div class="category-header">
+        <div class="cat-icon">🧠</div>
+        <h2>Basic Introduction</h2>
+        <span class="cat-count">3 questions</span>
+      </div>
+
+      <div class="card" data-q="1">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">01</span>
+          <span class="q-text">Tell me about yourself</span>
+          <div class="q-tags"><span class="tag blue">Common</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            Answer
+          </button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>I'm a software developer with around 2.5 years of experience, primarily working with <strong>React, Node.js, and REST APIs</strong>. I completed my B.Tech in Computer Science in 2022 and joined [Company Name] as a junior developer, where I've grown into handling end-to-end feature development.</p>
+              <div class="highlight">I recently led a module to optimize our dashboard load time by 40% using lazy loading and caching — that's the kind of performance-focused work I really enjoy.</div>
+              <p>Outside of coding, I enjoy reading about system design and contributing to open-source projects. I'm now looking for an opportunity where I can take on more ownership and grow into a mid-level or senior role.</p>
+              <span class="tip-pill">💡 Keep it under 90 seconds. End with why you're here today.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-q="2">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">02</span>
+          <span class="q-text">Walk me through your resume</span>
+          <div class="q-tags"><span class="tag blue">Common</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            Answer
+          </button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>Sure! I graduated in 2022 with a CS degree and started my career at [Company A] as a developer, where I primarily worked on backend APIs using Node.js and contributed to a customer-facing portal.</p>
+              <p>After about a year, I joined [Current Company], where I've been working as a full-stack developer. I've built features in React on the frontend and Node on the backend, and I've also been involved in code reviews and sprint planning.</p>
+              <div class="highlight">A key highlight has been refactoring a legacy module which reduced bug reports by roughly 30% in the following quarter.</div>
+              <p>I'm now at a point where I want to move into a role with broader technical scope, which is why this opportunity caught my attention.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-q="3">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">03</span>
+          <span class="q-text">Introduce yourself in brief (1 minute)</span>
+          <div class="q-tags"><span class="tag blue">Opening</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            Answer
+          </button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>Hi, I'm [Name], a software developer with about 2–3 years of experience in full-stack development. I specialize in <strong>JavaScript — React on the front end and Node.js on the back end</strong>. I've worked on products used by real users and I've learned a lot about writing clean, maintainable code.</p>
+              <p>I'm someone who takes ownership of tasks, communicates early when things go off track, and is always looking to improve. I'm excited about this opportunity because [specific reason about the company/role].</p>
+              <span class="tip-pill">💡 Memorize this. It's your opening pitch.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. CAREER -->
+    <div class="category cat-career" data-category="career">
+      <div class="category-header">
+        <div class="cat-icon">🎯</div>
+        <h2>Career & Motivation</h2>
+        <span class="cat-count">5 questions</span>
+      </div>
+
+      <div class="card" data-q="4">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">04</span>
+          <span class="q-text">Why do you want to join this company?</span>
+          <div class="q-tags"><span class="tag pink">Critical</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>I've been following [Company] for a while, and what draws me most is your focus on [specific product/domain — e.g., developer tooling / fintech / healthcare]. I've read about your [recent product/feature/initiative], and it aligns closely with the kind of work I want to do.</p>
+              <div class="highlight">I'm not just looking for any job — I'm looking for a team where I can build something meaningful and grow alongside people who take quality seriously. From what I've seen of your engineering culture, that resonates with me.</div>
+              <p>I also believe the scale at which you operate will push me to level up technically in ways my current role doesn't fully allow.</p>
+              <span class="tip-pill">💡 Always research the company. Generic answers get filtered immediately.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-q="5">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">05</span>
+          <span class="q-text">Why are you looking for a job change?</span>
+          <div class="q-tags"><span class="tag pink">Critical</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>I've had a great experience at my current company and learned a lot. However, I feel I've reached a point where the work has become repetitive and I'm not being stretched technically as much as I'd like.</p>
+              <p>I'm looking for a role that exposes me to more complex problems — whether that's higher scale, a different architecture, or a more product-focused team where my work directly impacts users.</p>
+              <div class="highlight">I want my next role to be a step up, not just a step sideways. This opportunity stood out because of [specific reason].</div>
+              <span class="tip-pill">💡 Never badmouth your current employer. Focus on growth, not escape.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-q="6">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">06</span>
+          <span class="q-text">Why should we hire you?</span>
+          <div class="q-tags"><span class="tag pink">Critical</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>I bring a combination of solid technical skills and a strong sense of ownership. I don't just write code — I think about the product, the user, and the long-term maintainability of what I build.</p>
+              <div class="highlight">In my current role, I've delivered features end-to-end — from requirement gathering to deployment — with minimal hand-holding. That kind of self-sufficiency is something I can bring here on day one.</div>
+              <p>On top of that, I'm a quick learner. When my team adopted a new CI/CD pipeline last year, I took the lead in setting it up because no one else had prior experience. I enjoy those challenges.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-q="7">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">07</span>
+          <span class="q-text">What are your career goals?</span>
+          <div class="q-tags"><span class="tag blue">Growth</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>In the near term, I want to grow into a well-rounded mid-level engineer — someone who can independently own a feature from design to deployment and mentor junior developers effectively.</p>
+              <p>Longer term, I'm interested in either a <strong>technical lead or architect path</strong>, depending on where my strengths take me. I care deeply about building scalable systems and I'd like to develop deeper expertise there.</p>
+              <span class="tip-pill">💡 Align your goals with what this role can offer. Show ambition + realism.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-q="8">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">08</span>
+          <span class="q-text">Where do you see yourself in 3–5 years?</span>
+          <div class="q-tags"><span class="tag blue">Growth</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>In 3–5 years, I see myself as a <strong>senior engineer or technical lead</strong> — someone who not only writes high-quality code but contributes to system design decisions and helps the team move faster by improving processes and tooling.</p>
+              <p>I'd also like to have built expertise in a specific domain — possibly distributed systems or developer experience — and ideally be in a role where I'm mentoring others.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. EXPERIENCE -->
+    <div class="category cat-experience" data-category="experience">
+      <div class="category-header">
+        <div class="cat-icon">💼</div>
+        <h2>Work Experience</h2>
+        <span class="cat-count">5 questions</span>
+      </div>
+
+      <div class="card" data-q="9">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">09</span>
+          <span class="q-text">What is your current role and responsibility?</span>
+          <div class="q-tags"><span class="tag green">Experience</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>I'm currently a Software Developer at [Company], working on a [product type — e.g., SaaS platform / e-commerce app]. My responsibilities include:</p>
+              <ul>
+                <li>Building and maintaining frontend features using React</li>
+                <li>Developing RESTful APIs using Node.js and Express</li>
+                <li>Participating in design discussions and sprint planning</li>
+                <li>Writing unit and integration tests, and conducting code reviews</li>
+              </ul>
+              <p>I also recently took up ad-hoc ownership of a performance improvement initiative within the team.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-q="10">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">10</span>
+          <span class="q-text">What is your biggest professional achievement?</span>
+          <div class="q-tags"><span class="tag green">Showcase</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer (STAR Format)</div>
+            <div class="answer-body">
+              <p><strong>Situation:</strong> Our main dashboard was loading in 6–8 seconds, causing drop-offs and user complaints.</p>
+              <p><strong>Task:</strong> I was asked to investigate and improve the performance without a full rewrite.</p>
+              <p><strong>Action:</strong> I profiled the app, identified heavy synchronous API calls and un-memoized components, implemented lazy loading, split API calls, and added Redis caching on the backend.</p>
+              <div class="highlight"><strong>Result:</strong> Load time dropped from 7 seconds to under 2 seconds — a 70% improvement. User retention on that page improved by 25% the following month.</div>
+              <span class="tip-pill">💡 Always quantify results. Numbers make stories credible.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-q="11">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">11</span>
+          <span class="q-text">Tell me about a challenge you faced and how you solved it</span>
+          <div class="q-tags"><span class="tag green">STAR</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>We had a critical bug in production right before a major client demo — a race condition in our payment flow that only appeared under concurrent load.</p>
+              <p>I stayed back with the team, reproduced it in a local environment using load simulation, traced it to a missing database transaction lock, and pushed the fix after proper testing — all within 4 hours.</p>
+              <div class="highlight">The demo went ahead without issues. After that, we introduced better concurrency testing to our pipeline to catch such issues earlier.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-q="12">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">12</span>
+          <span class="q-text">Describe a situation where you handled pressure well</span>
+          <div class="q-tags"><span class="tag green">Behavioral</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>During a sprint, a senior teammate fell ill two days before a deadline and I was asked to pick up their incomplete tasks on top of mine.</p>
+              <p>Instead of panicking, I quickly triaged the tasks — separating must-haves from nice-to-haves — communicated transparently with my manager about what was realistic, and focused on delivering the core functionality first.</p>
+              <div class="highlight">We shipped the critical parts on time. The remaining non-blocking items were moved to the next sprint with proper context handed off. My manager appreciated the transparency and decision-making.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-q="13">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">13</span>
+          <span class="q-text">Tell me about a time you failed</span>
+          <div class="q-tags"><span class="tag green">Honest</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>Early in my career, I underestimated the complexity of an API integration task and gave an overly optimistic timeline. Midway through, I realized there were undocumented edge cases that would take much longer to handle.</p>
+              <p>I informed my team late — which caused some planning disruption. The lesson I took from this was to <strong>always add buffer time for unknowns and to flag blockers early</strong>, even if it's uncomfortable.</p>
+              <div class="highlight">Since then, I've developed a habit of breaking tasks into smaller spikes before committing to estimates, and I proactively over-communicate progress.</div>
+              <span class="tip-pill">💡 Interviewers want honesty + reflection + growth. All three matter.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. SKILLS -->
+    <div class="category cat-skills" data-category="skills">
+      <div class="category-header">
+        <div class="cat-icon">🧩</div>
+        <h2>Skills & Behavior</h2>
+        <span class="cat-count">5 questions</span>
+      </div>
+
+      <div class="card" data-q="14">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">14</span>
+          <span class="q-text">What are your strengths?</span>
+          <div class="q-tags"><span class="tag purple">Classic</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>My biggest strength is <strong>ownership mindset</strong> — once I take on a task, I see it through completely and take responsibility for the outcome, not just the code.</p>
+              <p>I'm also good at <strong>debugging and root cause analysis</strong>. I genuinely enjoy tracing through systems to understand why something broke, rather than applying quick patches.</p>
+              <p>And lastly, I'm a <strong>clear communicator</strong> — I can explain technical issues to non-technical stakeholders in a way that's actionable and not jargon-heavy.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-q="15">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">15</span>
+          <span class="q-text">What are your weaknesses?</span>
+          <div class="q-tags"><span class="tag purple">Classic</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>Honestly, I tend to over-engineer solutions sometimes — I get excited about making things "perfect" when "good enough" would ship faster. I've been actively working on this by setting time-boxes for design decisions and reminding myself that <strong>iteration beats perfection</strong>.</p>
+              <p>I've also been working on becoming more comfortable speaking up in large group discussions — I tend to think before I speak, which sometimes means I miss the moment. I've been improving by jotting down key points before meetings.</p>
+              <span class="tip-pill">💡 Be genuine. Then show you're actively improving it.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-q="16">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">16</span>
+          <span class="q-text">How do you handle feedback?</span>
+          <div class="q-tags"><span class="tag purple">Behavior</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>I genuinely welcome feedback — I see it as a faster path to improvement than figuring things out alone. When I get feedback during code reviews, I first try to understand the reasoning behind it before implementing the change, because that's how I actually learn and not just fix.</p>
+              <div class="highlight">Early in my career, a senior dev called out that my functions were doing too many things. Instead of defending myself, I asked him to walk me through it. That conversation fundamentally changed how I approach function design.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-q="17">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">17</span>
+          <span class="q-text">How do you manage deadlines?</span>
+          <div class="q-tags"><span class="tag purple">Behavior</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>I break the work down into daily milestones so I always know whether I'm on track or not. If I hit a blocker that threatens the deadline, I raise it early — not the day before, but as soon as I see the risk.</p>
+              <p>I also <strong>protect focus time</strong> by batching meetings and async communication so I have uninterrupted coding blocks. That discipline has helped me consistently meet commitments without burnout.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-q="18">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">18</span>
+          <span class="q-text">How do you prioritize tasks when everything feels urgent?</span>
+          <div class="q-tags"><span class="tag purple">Behavior</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>I use a simple impact-vs-effort matrix. I ask: which of these tasks blocks someone else or directly affects the product / user? Those go first. Then I assess effort — high-impact, low-effort items get done immediately.</p>
+              <p>If priorities are truly unclear, I sync with my manager rather than guessing, because wrong prioritization is more expensive than a 10-minute conversation.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. TEAM -->
+    <div class="category cat-team" data-category="team">
+      <div class="category-header">
+        <div class="cat-icon">🤝</div>
+        <h2>Team & Communication</h2>
+        <span class="cat-count">3 questions</span>
+      </div>
+
+      <div class="card" data-q="19">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">19</span>
+          <span class="q-text">How do you handle conflicts in a team?</span>
+          <div class="q-tags"><span class="tag orange">Team</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>My first step is to make sure both sides actually understand each other's position — most technical conflicts stem from different contexts or assumptions, not fundamental disagreements.</p>
+              <p>I try to move the conversation from "I think X is right" to "here's the tradeoff between X and Y, given our constraints." Making it about data and tradeoffs rather than opinion reduces ego involvement significantly.</p>
+              <div class="highlight">Once we had a disagreement on REST vs GraphQL for a new API. Instead of debating endlessly, I proposed a brief spike on both — we built small prototypes and the team aligned based on concrete results.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-q="20">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">20</span>
+          <span class="q-text">Have you ever disagreed with a teammate or manager?</span>
+          <div class="q-tags"><span class="tag orange">Honesty</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>Yes. I once disagreed with a decision to skip writing tests for a feature due to time pressure. I shared my concern, explained the risk clearly, and proposed a middle ground — write tests only for the critical paths. My manager agreed, and those tests caught a regression a month later.</p>
+              <p>I believe it's important to <strong>disagree respectfully but clearly</strong>, and then commit to the final decision wholeheartedly once it's made — even if it wasn't mine.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-q="21">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">21</span>
+          <span class="q-text">How would you describe your communication style?</span>
+          <div class="q-tags"><span class="tag orange">Soft Skill</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>I'd describe my style as direct, but empathetic. I prefer written communication for complex topics — it forces clarity and creates a record — but I default to a quick sync for anything that involves ambiguity or emotion.</p>
+              <p>I also make a conscious effort to adapt based on audience: technical detail for engineers, outcome-focus for product and business stakeholders.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. GROWTH -->
+    <div class="category cat-growth" data-category="growth">
+      <div class="category-header">
+        <div class="cat-icon">🚀</div>
+        <h2>Growth & Learning</h2>
+        <span class="cat-count">3 questions</span>
+      </div>
+
+      <div class="card" data-q="22">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">22</span>
+          <span class="q-text">How do you keep your skills updated?</span>
+          <div class="q-tags"><span class="tag blue">Learning</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>I follow a mix of approaches: I read engineering blogs from companies like Stripe, Netflix, and Cloudflare to understand real-world decisions. I use platforms like LeetCode occasionally for problem-solving and Pluralsight for structured learning.</p>
+              <p>I also learn by <strong>building small side projects</strong> — it's the fastest way to understand a new tool in practice. Recently I built a small URL shortener to explore Redis, which helped me apply it confidently at work.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-q="23">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">23</span>
+          <span class="q-text">What new technologies are you currently learning?</span>
+          <div class="q-tags"><span class="tag blue">Tech</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>Currently I'm deepening my knowledge in <strong>system design</strong> — specifically around designing for scale, since I feel it's a gap I want to close before moving to a senior role. I'm working through "Designing Data-Intensive Applications" and building mini-projects to apply the concepts.</p>
+              <p>I'm also exploring <strong>Docker and Kubernetes</strong> at a practical level, since most modern deployments rely on them and I want to be self-sufficient in that area.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-q="24">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">24</span>
+          <span class="q-text">What would you do if you don't know something?</span>
+          <div class="q-tags"><span class="tag blue">Honesty</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>I say so clearly and then figure it out. I'm not afraid to admit knowledge gaps — pretending to know something and delivering something broken is far worse.</p>
+              <p>My typical approach: I'd tell my team I'm unfamiliar with it, do a focused 1–2 hour research session, and come back with either a solution or a clear question. I also reach out to colleagues who have experience in that area — <strong>the best developers I know are excellent at leveraging the knowledge around them</strong>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. SALARY -->
+    <div class="category cat-salary" data-category="salary">
+      <div class="category-header">
+        <div class="cat-icon">💰</div>
+        <h2>Salary & Availability</h2>
+        <span class="cat-count">5 questions</span>
+      </div>
+
+      <div class="card" data-q="25">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">25</span>
+          <span class="q-text">What is your current salary?</span>
+          <div class="q-tags"><span class="tag gold">Salary</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>My current CTC is [X LPA]. This includes my fixed pay, variable component, and other benefits. I'm happy to share a pay slip at the appropriate stage if needed.</p>
+              <div class="highlight">That said, I'm more focused on the overall package and the role itself — if the fit is strong and the opportunity is right, I'm open to discussing numbers that work for both sides.</div>
+              <span class="tip-pill">💡 Be honest. Inflating figures can backfire at offer stage.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-q="26">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">26</span>
+          <span class="q-text">What are your salary expectations?</span>
+          <div class="q-tags"><span class="tag gold">Negotiation</span><span class="tag pink">Critical</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer — Salary Expectation</div>
+            <div class="answer-body">
+              <p>Based on my research into market rates for this role and my experience level, I'm targeting a range of <strong>[X to X+3 LPA]</strong>. I've arrived at this by looking at industry benchmarks on platforms like Glassdoor and AmbitionBox for similar roles at this level.</p>
+              <div class="highlight">That said, I'm open to discussing the complete package — base, variable, stock, and growth opportunities all factor into my decision. If the role is the right fit, I'm happy to find a number that works for both of us.</div>
+              <span class="tip-pill">💡 Give a range, not a single number. The top of your range should be your actual target.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-q="27">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">27</span>
+          <span class="q-text">Are you open to negotiation?</span>
+          <div class="q-tags"><span class="tag gold">Negotiation</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>Yes, absolutely. I believe every offer has room for a thoughtful conversation. If the base is lower than I expected, I'd want to understand what the variable component looks like, what the review cycle is, and whether there are ESOPs or other benefits that could bridge the gap.</p>
+              <div class="highlight">I won't negotiate just for the sake of it — but I will advocate clearly for what I believe is fair, backed by market data. I'm also happy to sign quickly once we've agreed, so there's no dragged-out process on my end.</div>
+              <span class="tip-pill">💡 Always counter-offer at least once. Most offers have 10–20% flex built in.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-q="28">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">28</span>
+          <span class="q-text">Are you an immediate joiner / what's your notice period?</span>
+          <div class="q-tags"><span class="tag gold">Logistics</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>My notice period is [X days / 1 month / 2 months]. I plan to serve my full notice to ensure a proper handover — I take professional transitions seriously.</p>
+              <p>If there's an urgent need on your side, I'm willing to discuss a buyout option with my current employer, though I can't guarantee it. I'd say a realistic joining date would be [date].</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-q="29">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">29</span>
+          <span class="q-text">Are you willing to relocate?</span>
+          <div class="q-tags"><span class="tag gold">Logistics</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>Yes, I'm open to relocation if the role is the right fit. I'd need a reasonable timeline to arrange logistics — roughly 2–4 weeks after offer acceptance should be sufficient.</p>
+              <p>If possible, it would be helpful to understand what relocation support your company provides — that helps me plan better. But logistically, it's not a blocker.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. COMPANY -->
+    <div class="category cat-company" data-category="company">
+      <div class="category-header">
+        <div class="cat-icon">🏢</div>
+        <h2>Company-Specific</h2>
+        <span class="cat-count">2 questions</span>
+      </div>
+
+      <div class="card" data-q="30">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">30</span>
+          <span class="q-text">What do you know about our company?</span>
+          <div class="q-tags"><span class="tag pink">Research</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer Framework</div>
+            <div class="answer-body">
+              <p>From my research: [Company] was founded in [year] and operates in the [domain] space. Your flagship product is [product], which [value it provides]. I read about your recent [news/announcement/feature] — [brief comment on why it's interesting or relevant].</p>
+              <p>I also noticed your engineering blog / GitHub activity — it looks like your team cares about [specific thing]. That's something that resonated with me.</p>
+              <div class="highlight">I find your focus on [mission/product direction] genuinely compelling — it's a problem space I'm personally interested in.</div>
+              <span class="tip-pill">💡 Spend 20–30 min researching before every interview. It always shows.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-q="31">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">31</span>
+          <span class="q-text">What excites you most about this role?</span>
+          <div class="q-tags"><span class="tag pink">Motivation</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Sample Answer</div>
+            <div class="answer-body">
+              <p>A few things stand out. First, the scale — I've mostly worked on smaller traffic systems, and the opportunity to build for [X users / high scale] is something I want to experience and learn from.</p>
+              <p>Second, the technical stack — [tech they use] aligns closely with my background and I'm genuinely excited to go deeper. And third, the product itself — I've actually used [product/feature] and I care about the problem it's solving. That makes a big difference to me.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. REVERSE QUESTIONS -->
+    <div class="category cat-reverse" data-category="reverse">
+      <div class="category-header">
+        <div class="cat-icon">❓</div>
+        <h2>Questions to Ask Them</h2>
+        <span class="cat-count">1 section</span>
+      </div>
+
+      <div class="card" data-q="32">
+        <div class="card-question" onclick="toggleCard(this)">
+          <span class="q-number">32</span>
+          <span class="q-text">Do you have any questions for us?</span>
+          <div class="q-tags"><span class="tag purple">Must Ask</span></div>
+          <button class="reveal-btn" onclick="event.stopPropagation(); toggleCard(this.closest('.card').querySelector('.card-question'))"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>Answer</button>
+        </div>
+        <div class="answer-panel">
+          <div class="answer-inner">
+            <div class="answer-label">Smart Questions to Ask</div>
+            <div class="answer-body">
+              <ul>
+                <li><strong>What does a typical onboarding look like for developers joining the team?</strong></li>
+                <li><strong>What are the biggest technical challenges the team is facing right now?</strong></li>
+                <li><strong>How does the team handle technical debt vs. new features?</strong></li>
+                <li><strong>What does career growth look like for developers in this company?</strong></li>
+                <li><strong>How are engineering decisions made — top-down or collaborative?</strong></li>
+                <li><strong>What does success look like for someone in this role in the first 6 months?</strong></li>
+              </ul>
+              <div class="highlight">Never say "No, I'm good." Always ask at least 2 questions. It signals genuine interest and curiosity.</div>
+              <span class="tip-pill">💡 Avoid asking about salary or WFH policy in the HR round unless they bring it up.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end questionsContainer -->
+
+  <div id="noResults">
+    <div class="nr-icon">🔍</div>
+    <p>No questions match your search. Try a different keyword.</p>
+  </div>
+
+  <footer>Built for developers · Practice makes perfect · Good luck 🚀</footer>
+
+</div>
+
+<script>
+  const TOTAL = 32;
+  let revealedSet = new Set();
+
+  function toggleCard(trigger) {
+    const card = trigger.closest('.card');
+    const panel = card.querySelector('.answer-panel');
+    const btn = card.querySelector('.reveal-btn');
+    const isOpen = panel.classList.contains('open');
+
+    panel.classList.toggle('open', !isOpen);
+    btn.classList.toggle('active', !isOpen);
+    card.classList.toggle('revealed', !isOpen);
+
+    const qNum = parseInt(card.dataset.q);
+    if (!isOpen) {
+      revealedSet.add(qNum);
+    }
+    updateProgress();
+  }
+
+  function toggleAll(show) {
+    const cards = document.querySelectorAll('.card:not(.hidden-by-search)');
+    cards.forEach(card => {
+      const panel = card.querySelector('.answer-panel');
+      const btn = card.querySelector('.reveal-btn');
+      panel.classList.toggle('open', show);
+      btn.classList.toggle('active', show);
+      card.classList.toggle('revealed', show);
+      const qNum = parseInt(card.dataset.q);
+      if (show) revealedSet.add(qNum);
+    });
+    if (!show) revealedSet.clear();
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const count = revealedSet.size;
+    document.getElementById('revealedCount').textContent = count;
+    document.getElementById('progressText').textContent = `${count} / ${TOTAL} reviewed`;
+    const pct = Math.round((count / TOTAL) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+  }
+
+  function handleSearch() {
+    const val = document.getElementById('searchInput').value.toLowerCase().trim();
+    const cards = document.querySelectorAll('.card');
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+      const qText = card.querySelector('.q-text').textContent.toLowerCase();
+      const answerText = card.querySelector('.answer-body') ? card.querySelector('.answer-body').textContent.toLowerCase() : '';
+      const matches = !val || qText.includes(val) || answerText.includes(val);
+      card.classList.toggle('hidden-by-search', !matches);
+      if (matches) visibleCount++;
+    });
+
+    // Show/hide categories
+    document.querySelectorAll('.category').forEach(cat => {
+      const visibleCards = cat.querySelectorAll('.card:not(.hidden-by-search)');
+      cat.style.display = visibleCards.length === 0 ? 'none' : '';
+    });
+
+    document.getElementById('noResults').style.display = visibleCount === 0 ? 'block' : 'none';
+  }
+</script>
+</body>
+</html>
